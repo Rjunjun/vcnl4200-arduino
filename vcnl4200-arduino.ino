@@ -1,10 +1,5 @@
-/*
- Name:    CRC_VCNL4200.ino
- Created: 8/27/2017 4:10:37 PM
- Author:  jlaing
-*/
 #include <arduino-timer.h>
-#include "CRC_VCNL4200.h"
+#include "src/CRC_VCNL4200.h"
 #define led_pin 5
 
 CRC_VCNL4200 vcnl4200;
@@ -15,10 +10,7 @@ auto timer = timer_create_default(); // create a timer with default settings
 
 bool vcnl_timer(void *) {
   current_appxmt = vcnl4200.getProximity();
-//  Serial.print("Proximity: ");
   Serial.println(current_appxmt);
-//  Serial.print("Ambient: ");
-//  Serial.println(vcnl4200.getAmbient());
   if(current_appxmt > threshold_appxmt){
     digitalWrite(led_pin, 0);
     digitalWrite(13, 0);
