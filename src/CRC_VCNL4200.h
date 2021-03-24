@@ -4,11 +4,11 @@
 #define _CRC_VCNL4200_h
 
 #if defined(ARDUINO) && ARDUINO >= 100
-	#include "Arduino.h"
+#include "Arduino.h"
 #else
-	#include "WProgram.h"
+#include "WProgram.h"
 #endif
-	#include <Wire.h>
+#include <Wire.h>
 #endif
 
 //Register declarations
@@ -27,21 +27,23 @@
 #define VCNL4200_INT_FLAG_REG 0x0D
 #define VCNL4200_DeviceID_REG 0x0E
 
-
 //Ambient Light Sensor Shut Down
-typedef enum {
+typedef enum
+{
 	VCNL4200_ALS_Shutdown_on = 0,
 	VCNL4200_ALS_Shutdown_off = 1
 } VCNL4200_ALS_Shutdown;
 
 //Ambient Light Sensor Interrupt
-typedef enum {
+typedef enum
+{
 	VCNL4200_ALS_Interrupt_disable = 0,
 	VCNL4200_ALS_Interrupt_enable = 2
 } VCNL4200_ALS_Interrupt;
 
 //Ambient Light Persistence Setting
-typedef enum {
+typedef enum
+{
 	VCNL4200_ALS_Pers_one = 0,
 	VCNL4200_ALS_Pers_two = 4,
 	VCNL4200_ALS_Pers_four = 8,
@@ -49,31 +51,33 @@ typedef enum {
 } VCNL4200_ALS_Pers;
 
 //Ambient Light Sensor Interrupt
-typedef enum {
+typedef enum
+{
 	VCNL4200_ALS_INT_SWITCH_als = 0,
 	VCNL4200_ALS_INT_SWITCH_white = 32
 } VCNL4200_ALS_INT_SWITCH;
 
 //Ambient Light Sensor Integration Time in Milliseconds
-typedef enum {
+typedef enum
+{
 	VCNL4200_ALS_IT_ms50 = 0,
 	VCNL4200_ALS_IT_ms100 = 64,
 	VCNL4200_ALS_IT_ms200 = 128,
 	VCNL4200_ALS_IT_ms400 = 192
 } VCNL4200_ALS_IT;
 
-
-class CRC_VCNL4200 {
+class CRC_VCNL4200
+{
 public:
 	CRC_VCNL4200();
 	boolean exists();
 	boolean initialize();
-	
+
 	//Edit the binary settings here to change default startup options
 	boolean set_ALS_CONF(uint8_t c1 = B01000001);
 	boolean set_PS_CONF1_CONF2(uint8_t c1 = B00101010, uint8_t c2 = B00001000);
 	boolean set_PS_CONF3_MS(uint8_t c3 = B01110000, uint8_t m = B00000111);
-	
+
 	uint16_t getProximity();
 	uint16_t getAmbient();
 	uint16_t getProxLowInterrupt();

@@ -7,11 +7,13 @@
 #include <Wire.h>
 #include "CRC_VCNL4200.h"
 
-CRC_VCNL4200::CRC_VCNL4200() { 
+CRC_VCNL4200::CRC_VCNL4200()
+{
 	_i2caddr = VCNL4200_I2CADDR;
 }
 
-boolean CRC_VCNL4200::exists() {
+boolean CRC_VCNL4200::exists()
+{
 	Wire.begin();
 	uint8_t rev = 0;
 	Wire.beginTransmission(_i2caddr);
@@ -21,13 +23,15 @@ boolean CRC_VCNL4200::exists() {
 	byte lowByte = Wire.read();
 	byte highByte = Wire.read();
 	//Strange that highByte returns 0x10 while documentation says it should return 0x01
-	if ((lowByte == 0x58) && (highByte == 0x10)) {
+	if ((lowByte == 0x58) && (highByte == 0x10))
+	{
 		return true;
 	}
 	return false;
 }
 
-boolean CRC_VCNL4200::initialize() {
+boolean CRC_VCNL4200::initialize()
+{
 	set_ALS_CONF();
 	set_PS_CONF1_CONF2();
 	set_PS_CONF3_MS();
@@ -39,17 +43,20 @@ boolean CRC_VCNL4200::initialize() {
 	return true;
 }
 
-boolean CRC_VCNL4200::set_ALS_CONF(uint8_t settingTotal) {
+boolean CRC_VCNL4200::set_ALS_CONF(uint8_t settingTotal)
+{
 	write16_LowHigh(VCNL4200_ALS_CONF_REG, settingTotal, B00000000);
 	return true;
 }
 
-boolean CRC_VCNL4200::set_PS_CONF1_CONF2(uint8_t conf1, uint8_t conf2) {
+boolean CRC_VCNL4200::set_PS_CONF1_CONF2(uint8_t conf1, uint8_t conf2)
+{
 	write16_LowHigh(VCNL4200_PS_CONF1_CONF2_REG, conf1, conf2);
 	return true;
 }
 
-boolean CRC_VCNL4200::set_PS_CONF3_MS(uint8_t conf3, uint8_t ms) {
+boolean CRC_VCNL4200::set_PS_CONF3_MS(uint8_t conf3, uint8_t ms)
+{
 	Serial.print("Conf3, MS:");
 	Serial.print(conf3);
 	Serial.print(", ");
@@ -58,25 +65,30 @@ boolean CRC_VCNL4200::set_PS_CONF3_MS(uint8_t conf3, uint8_t ms) {
 	return true;
 }
 
-uint16_t CRC_VCNL4200::getProximity() {
+uint16_t CRC_VCNL4200::getProximity()
+{
 	return readData(VCNL4200_PROXIMITY_REG);
 }
 
-uint16_t CRC_VCNL4200::getProxLowInterrupt() {
+uint16_t CRC_VCNL4200::getProxLowInterrupt()
+{
 	return readData(VCNL4200_PS_THDL_REG);
 }
 
-uint16_t CRC_VCNL4200::getProxHighInterrupt() {
+uint16_t CRC_VCNL4200::getProxHighInterrupt()
+{
 	return readData(VCNL4200_PS_THDH_REG);
 }
 
-uint8_t CRC_VCNL4200::getInterruptFlag() {
+uint8_t CRC_VCNL4200::getInterruptFlag()
+{
 	uint8_t reading;
 	reading = readData(VCNL4200_INT_FLAG_REG);
 	return reading;
 }
 
-uint16_t CRC_VCNL4200::getAmbient() {
+uint16_t CRC_VCNL4200::getAmbient()
+{
 	return readData(VCNL4200_AMBIENT_REG);
 }
 
@@ -87,9 +99,11 @@ uint16_t CRC_VCNL4200::readData(uint8_t command_code)
 	Wire.write(command_code);
 	Wire.endTransmission(false);
 	Wire.requestFrom(_i2caddr, uint8_t(2));
-	while (!Wire.available());
+	while (!Wire.available())
+		return 0;
 	uint8_t byteLow = Wire.read();
-	while (!Wire.available());
+	while (!Wire.available())
+		;
 	uint16_t byteHigh = Wire.read();
 	reading = (byteHigh <<= 8) + byteLow;
 	return reading;
