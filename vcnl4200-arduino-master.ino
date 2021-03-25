@@ -3,7 +3,7 @@
 #define led_pin_sensor 5
 #define led_pin_on 6
 #define led_pin_error 9
-
+#define read_slave_pin 8
 CRC_VCNL4200 vcnl4200;
 int pinReading = 0;
 uint16_t threshold_appxmt = 150;
@@ -24,18 +24,19 @@ bool count_timer(void *) {
 bool vcnl_timer(void *) {
   current_appxmt = vcnl4200.getProximity();
   if(current_appxmt == 0){
-    Serial.println(current_appxmt);
+    //Serial.println(current_appxmt);
     return false;
   }
   counter = 0;
-  Serial.println(current_appxmt);
-  if(current_appxmt > threshold_appxmt){
-    digitalWrite(led_pin_sensor, 0);
-    digitalWrite(13, 0);
-  }
-  else{
+  Serial.println(!(current_appxmt > threshold_appxmt)&&digitalRead(read_slave_pin));
+  //Serial.println(current_appxmt);
+  if(!(current_appxmt > threshold_appxmt)&&digitalRead(read_slave_pin)){
     digitalWrite(led_pin_sensor, 1);
     digitalWrite(13, 1);
+  }
+  else{
+    digitalWrite(led_pin_sensor, 0);
+    digitalWrite(13, 0);
   }
   return true;
 }
